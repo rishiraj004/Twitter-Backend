@@ -10,6 +10,8 @@ class TweetService {
         const content = tweetData.content;
         let hashtags = content.match(/#[a-zA-Z0-9_]+/g) || []; // Match hashtags in the content
         hashtags = hashtags.map(tag => tag.substring(1)); // Remove the '#' character
+        hashtags = hashtags.map(tag => tag.toLowerCase()); // Convert hashtags to lowercase
+        
         const tweet = await this.tweetRepository.createTweet(tweetData);
         
         let alreadyCreatedHashtags = await this.hashtagRepository.getHashtagsByName(hashtags); // Fetch existing hashtags by name
