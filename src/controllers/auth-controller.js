@@ -26,6 +26,36 @@ class AuthController {
             });
         }
     }
+
+    async signIn(req, res) {
+        try {
+            const { email, password } = req.body;
+            const user = await userService.signIn(email, password);
+            if (user) {
+                return res.status(200).json({
+                    message: "User signed in successfully",
+                    data: user,
+                    success: true,
+                    err: {}
+                });
+            } else {
+                return res.status(401).json({
+                    message: "Invalid credentials",
+                    data: {},
+                    success: false,
+                    err: {}
+                });
+            }
+        } catch (error) {
+            console.error("Error signing in:", error);
+            res.status(500).json({ 
+                err: error.message,
+                message: "Error signing in",
+                success: false,
+                data: {} 
+            });
+        }
+    }
 }
 
 export default AuthController;

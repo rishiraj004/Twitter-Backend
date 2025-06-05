@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -29,6 +30,18 @@ userSchema.pre("save", function(next) {
     user.password = encryptedPassword;
     next();
 });
+
+userSchema.methods.comparePassword = function(password) {
+    return bcrypt.compareSync(password, this.password);
+}
+
+userSchema.methods.genJWT = function generate() {
+    return jwt.sign(
+        { _id: this._id, email: this.email },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+    );
+}
 
 const User = mongoose.model("User", userSchema);
 
