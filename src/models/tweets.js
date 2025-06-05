@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const tweetSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     content: {
         type: String,
         required: true,
@@ -10,6 +15,12 @@ const tweetSchema = new mongoose.Schema({
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Hashtag'
+        }
+    ],
+    likes: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Like'
         }
     ]
 }, {timestamps: true});

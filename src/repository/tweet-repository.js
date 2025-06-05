@@ -54,6 +54,15 @@ class TweetRepository {
             throw new Error('Error deleting tweet: ' + error.message);
         }
     }
+
+    async find(id) {
+        try {
+            const tweet = await Tweet.findById(id).populate('likes');
+            return tweet;
+        } catch (error) {
+            throw new Error('Error finding tweet: ' + error.message);
+        }
+    }
 }
 
 export default TweetRepository;
