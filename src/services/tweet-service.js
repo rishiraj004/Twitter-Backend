@@ -44,6 +44,14 @@ class TweetService {
         await tweet.save(); // Save the tweet with the associated hashtags
         return tweet;
     }
+
+    async get(tweetId) {
+        const tweet = await this.tweetRepository.getWithComments(tweetId);
+        if (!tweet) {
+            throw new Error('Tweet not found');
+        }
+        return tweet;
+    }
 }
 
 export default TweetService;

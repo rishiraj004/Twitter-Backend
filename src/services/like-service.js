@@ -10,6 +10,14 @@ class LikeService {
 
     async toggleLike(modelId, modelType, userId) { // /api/v1/likes/toggle?id=modelid&type=Tweet
         try {
+            if(modelType == 'Tweet') {
+                var likeable = await this.tweetRepository.find(modelId);
+            } else if(modelType == 'Comment') {
+                var likeable = await this.commentRepository.find(modelId);
+            } else {
+                throw new Error('Invalid model type');
+            }
+
             const likeData = {
                 likeable: modelId,
                 onModel: modelType,
@@ -20,11 +28,15 @@ class LikeService {
 
             if (existingLike) {
                 // If the like exists, remove it
-                await this.likeRepository.destroy(existingLike._id);
+                await existingLike.remove();
+                likeable.likes.pull(existingLike._id);
+                await likeable.save();
                 var isAdded = false;
             } else {
                 // If the like does not exist, create it
                 await this.likeRepository.create(likeData);
+                likeable.likes.push(likeData);
+                await likeable.save();
                 var isAdded = true;
             }
             return {

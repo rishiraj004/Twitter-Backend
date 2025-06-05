@@ -1,4 +1,5 @@
 import Tweet from '../models/tweets.js';
+import { populateCommentsRecursively } from '../utils/comment-populate-helper.js';
 
 class TweetRepository {
     async createTweet(tweetData) {
@@ -61,6 +62,24 @@ class TweetRepository {
             return tweet;
         } catch (error) {
             throw new Error('Error finding tweet: ' + error.message);
+        }
+    }
+
+    async getWithComments(tweetId) {
+        try {
+            const tweet = await Tweet.findById(tweetId)
+                .populate('comments')
+                .lean();
+            if (!tweet) {
+                throw new Error('Tweet not found');
+            }
+            // Recursively populate all nested comments and their users
+            if (tweet.comments && tweet.comments.length > 0) {
+                tweet.comments = await populateCommentsRecursively(tweet.comments);
+            }
+            return tweet;
+        } catch (error) {
+            throw new Error('Error fetching tweet with comments: ' + error.message);
         }
     }
 }
