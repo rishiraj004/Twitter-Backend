@@ -1,4 +1,4 @@
-import LikeService from '../services/like-service.js';
+import { LikeService } from '../services/index.js';
 
 const likeService = new LikeService();
 

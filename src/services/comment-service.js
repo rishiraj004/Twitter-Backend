@@ -1,6 +1,6 @@
 import { CommentRepository, TweetRepository } from "../repository/index.js";
 
-class CommentServices {
+class CommentService {
     constructor() {
         this.commentRepository = new CommentRepository();
         this.tweetRepository = new TweetRepository();
@@ -44,4 +44,4 @@ class CommentServices {
     }
 }
 
-export default CommentServices;
+export default CommentService;

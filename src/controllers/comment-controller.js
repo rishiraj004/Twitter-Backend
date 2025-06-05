@@ -1,4 +1,4 @@
-import CommentService from '../services/comment-service.js';
+import { CommentService } from '../services/index.js';
 const commentService = new CommentService();
 
 class CommentController {
