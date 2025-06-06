@@ -1,16 +1,33 @@
 import { TweetService } from "../services/index.js";
+import upload from "../config/file-upload-s3-config.js";
 
+const singleUpload = upload.single('image');
 const tweetService = new TweetService();
 
 class TweetController {
     async createTweet(req, res) {
         try {
-            const tweet = await tweetService.createTweet(req.body);
-            res.status(201).json({
-                message: "Tweet created successfully",
-                data: tweet,
-                success: true,
-                err: {}
+            singleUpload(req, res, async (err, data) => {
+                if (err) {
+                    console.error("Error uploading file:", err);
+                    return res.status(500).json({ 
+                        err: err,
+                        message: "Error uploading file in controller",
+                        success: false,
+                        data: {} 
+                    });
+                }
+
+                const tweetData = {...req.body };
+                tweetData.image = req.file ? req.file.location : null; // S3 URL of the uploaded image
+
+                const newTweet = await tweetService.createTweet(tweetData);
+                res.status(201).json({
+                    message: "Tweet created successfully",
+                    data: newTweet,
+                    success: true,
+                    err: {}
+                });
             });
         } catch (error) {
             console.error("Error creating tweet:", error);
